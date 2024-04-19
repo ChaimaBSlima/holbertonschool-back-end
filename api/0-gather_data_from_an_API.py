@@ -3,13 +3,17 @@ import requests
 import sys
 
 
-def main(a):
+import requests
+import sys
+
+
+def TODO_REQUESTS(ID):
     todos = requests.get(
-        f"https://jsonplaceholder.typicode.com/todos?userId={a}"
+        f"https://jsonplaceholder.typicode.com/todos?userId={ID}"
     ).json()
     user_info = requests.get(
         f"https://jsonplaceholder.\
-typicode.com/users/{a}"
+typicode.com/users/{ID}"
     ).json()
     completed_tasks = [task["title"] for task in todos if task["completed"]]
     print(
@@ -19,6 +23,8 @@ typicode.com/users/{a}"
     for task in completed_tasks:
         print("\t {}".format(task))
 
+
 if __name__ == "__main__":
-    a = sys.argv[1]
-    main(a)
+    ID = sys.argv[1]
+
+    TODO_REQUESTS(ID)
