@@ -3,22 +3,22 @@ import requests
 import sys
 
 
-def main():
-    user_id = sys.argv[1]
-    user = 'https://jsonplaceholder.typicode.com/users/{}'.format(user_id)
-    todos = 'https://jsonplaceholder.typicode.com/todos/?userId={}'.format(
-        user_id)
-    name = requests.get(user).json().get('name')
-    request_todo = requests.get(todos).json()
-    tasks = [task.get('title')
-             for task in request_todo if task.get('completed') is True]
-
-    print('Employee {} is done with tasks({}/{}):'.format(name,
-                                                          len(tasks),
-                                                          len(request_todo)))
-    print('\n'.join('\t {}'.format(task) for task in tasks))
-
+def main(a):
+    todos = requests.get(
+        f"https://jsonplaceholder.typicode.com/todos?userId={a}"
+    ).json()
+    user_info = requests.get(
+        f"https://jsonplaceholder.\
+typicode.com/users/{a}"
+    ).json()
+    completed_tasks = [task["title"] for task in todos if task["completed"]]
+    print(
+        f"Employee {user_info['name']} is done with tasks\
+({len(completed_tasks)}/{len(todos)}):"
+    )
+    for task in completed_tasks:
+        print("\t {}".format(task))
 
 if __name__ == "__main__":
-    if len(sys.argv) == 2:
-        main()
+    a = sys.argv[1]
+    main(a)
