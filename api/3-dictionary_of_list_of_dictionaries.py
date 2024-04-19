@@ -1,30 +1,38 @@
 #!/usr/bin/python3
-
+"""
+This script will use the REST API to return information
+about a given employee's TODO list progress.
+"""
 import json
 import requests
 
 
-def main():
-    users_uri = 'https://jsonplaceholder.typicode.com/users'
-    users = requests.get(users_uri).json()
-    info = {}
+def TODO_REQUESTS():
+    """
+    extend your Python script to export data in the JSON format
+    """
+    todos = requests.get(f"https://jsonplaceholder.typicode.com/todos").json()
+    users = requests.get(
+        f"https://jsonplaceholder.\
+typicode.com/users"
+    ).json()
 
-    for user in users:
-        user_id = user.get('id')
-        name = user.get('username')
-        todos = 'https://jsonplaceholder.typicode.com/todos?userId={}'.format(
-            user_id)
-        request_todo = requests.get(todos).json()
-        tasks = []
-        for todo in request_todo:
-            task = {"username": name, "task": todo.get("title"),
-                    "completed": todo.get("completed")}
-            tasks.append(task)
-        info[user_id] = tasks
+    data = {
+        user["id"]: [
+            {
+                "username": user["username"],
+                "task": task["title"],
+                "completed": task["completed"],
+            }
+            for task in todos
+            if task["userId"] == user["id"]
+        ]
+        for user in users
+    }
 
-    with open('todo_all_employees.json', 'w+') as file:
-        file.write(json.dumps(info))
+    with open(f"todo_all_employees.json", "w") as jsonfile:
+        json.dump(data, jsonfile)
 
 
 if __name__ == "__main__":
-    main()
+    TODO_REQUESTS()

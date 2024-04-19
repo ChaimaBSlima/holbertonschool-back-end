@@ -1,28 +1,39 @@
 #!/usr/bin/python3
+"""
+This script will use the REST API to return information
+about a given employee's TODO list progress.
+"""
 import json
 import requests
 import sys
 
 
-def main():
+def TODO_REQUESTS(ID):
+    """
+    extend your Python script to export data in the json format
+    """
+    todos = requests.get(
+        f"https://jsonplaceholder.typicode.com/todos?userId={ID}"
+    ).json()
+    user = requests.get(
+        f"https://jsonplaceholder.\
+typicode.com/users/{ID}"
+    ).json()
+    data = {
 
-    user_id = sys.argv[1]
-    user = 'https://jsonplaceholder.typicode.com/users/{}'.format(user_id)
-    todos = 'https://jsonplaceholder.typicode.com/todos/?userId={}'.format(
-        user_id)
-    name = requests.get(user).json().get('username')
-    request_todo = requests.get(todos).json()
-    tasks = []
-
-    with open('{}.json'.format(user_id), 'w+') as file:
-        for todo in request_todo:
-            task = {"task": todo.get("title"),
-                    "completed": todo.get("completed"), "username": name}
-            tasks.append(task)
-        info = {user_id: tasks}
-        file.write(json.dumps(info))
+        ID: [
+            {
+                "username": user["username"],
+                "task": task["title"],
+                "completed": task["completed"],
+            }
+            for task in todos
+        ]
+    }
+    with open(f"{ID}.json", "w") as jsonfile:
+        json.dump(data, jsonfile)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 2:
-        main()
+    ID = sys.argv[1]
+    TODO_REQUESTS(ID)
