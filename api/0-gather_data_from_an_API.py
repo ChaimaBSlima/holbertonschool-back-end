@@ -2,11 +2,6 @@
 import requests
 import sys
 
-
-import requests
-import sys
-
-
 def TODO_REQUESTS(ID):
     todos = requests.get(
         f"https://jsonplaceholder.typicode.com/todos?userId={ID}"
